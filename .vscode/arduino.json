@@ -1,4 +1,4 @@
 {
     "board": "arduino:avr:uno",
-    "port": "COM4"
+    "port": "COM1"
 }

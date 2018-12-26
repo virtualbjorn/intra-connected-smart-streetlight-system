@@ -21,10 +21,7 @@ unsigned long resetTime = 60000; // trigger WDT after 1 minute
 int buttonState = 0;
 int isSensorData = 0;
 int isLoRaData = 0;
-int ledBrightness = 50;
-
-int wdtDisabled = 0;
-int runCycle = 0;
+int ledBrightness = 20;
 
 void setup() {
   wdt_disable();
@@ -75,7 +72,6 @@ void loop()
   buttonState = digitalRead(nmiPin);
   isSensorData = digitalRead(sensorPin);
   if (buttonState == 1) {
-    Serial.println("buttonTriggerNMI");
     nmiTrigger();
   }
   if (rf69.waitAvailableTimeout(500)) {
@@ -103,13 +99,12 @@ void loop()
     }
     if (millis() <= resetTime) {
       wdt_reset();
-    } else {
+    } else if (isSensorData == 0 and isLoRaData == 0) {
       Serial.println("System will reboot after not detecting anything in the next 8 seconds...");
     }
     switchMode(isSensorData, isLoRaData);
     isLoRaData = 0;
   }
-  runCycle += 1;
   delay(500);
 }
 
