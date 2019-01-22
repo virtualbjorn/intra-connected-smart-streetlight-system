@@ -74,37 +74,41 @@ void loop()
   if (buttonState == 1) {
     nmiTrigger();
   }
-  if (rf69.waitAvailableTimeout(500)) {
-    // Should be a message for us now
-    wdt_reset();
-    uint8_t buf[RH_RF69_MAX_MESSAGE_LEN];
-    uint8_t len = sizeof(buf);
-    if (! rf69.recv(buf, &len)) {
-      Serial.println("Receive failed");
-      return;
-    }
-    rf69.printBuffer("Received: ", buf, len);
-    buf[len] = 0;
-    Serial.print("Got: "); Serial.println((char*)buf);
-    Serial.print("RSSI: "); Serial.println(rf69.lastRssi(), DEC);
-    isLoRaData = 1;
-    switchMode(isSensorData, isLoRaData);
-  } else {
-    if (isSensorData == 1) {
-      wdt_reset();
-      char radiopacket[20] = "1";
-      Serial.println("Sending  data to next node");
-      rf69.send((uint8_t *)radiopacket, strlen(radiopacket));
-      rf69.waitPacketSent();
-    }
-    if (millis() <= resetTime) {
-      wdt_reset();
-    } else if (isSensorData == 0 and isLoRaData == 0) {
-      Serial.println("System will reboot after not detecting anything in the next 8 seconds...");
-    }
-    switchMode(isSensorData, isLoRaData);
-    isLoRaData = 0;
-  }
+  char radiopacket[20] = "NODE B";
+  Serial.println("Sending  data to next node");
+  rf69.send((uint8_t *)radiopacket, strlen(radiopacket));
+  rf69.waitPacketSent();
+  //  if (rf69.waitAvailableTimeout(500)) {
+  //    // Should be a message for us now
+  //    wdt_reset();
+  //    uint8_t buf[RH_RF69_MAX_MESSAGE_LEN];
+  //    uint8_t len = sizeof(buf);
+  //    if (! rf69.recv(buf, &len)) {
+  //      Serial.println("Receive failed");
+  //      return;
+  //    }
+  //    rf69.printBuffer("Received: ", buf, len);
+  //    buf[len] = 0;
+  //    Serial.print("Got: "); Serial.println((char*)buf);
+  //    Serial.print("RSSI: "); Serial.println(rf69.lastRssi(), DEC);
+  //    isLoRaData = 1;
+  //    switchMode(isSensorData, isLoRaData);
+  //  } else {
+  //    if (isSensorData == 1) {
+  //      wdt_reset();
+  //      char radiopacket[20] = "1";
+  //      Serial.println("Sending  data to next node");
+  //      rf69.send((uint8_t *)radiopacket, strlen(radiopacket));
+  //      rf69.waitPacketSent();
+  //    }
+  //    if (millis() <= resetTime) {
+  //      wdt_reset();
+  //    } else if (isSensorData == 0 and isLoRaData == 0) {
+  //      Serial.println("System will reboot after not detecting anything in the next 8 seconds...");
+  //    }
+  //    switchMode(isSensorData, isLoRaData);
+  //    isLoRaData = 0;
+  //  }
   delay(500);
 }
 
